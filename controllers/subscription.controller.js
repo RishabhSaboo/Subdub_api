@@ -1,6 +1,7 @@
 import { EMAIL_PASS, EMAIL_USER } from "../config/env.js";
 import Subscription from "../models/subscription.model.js"
 import nodemailer from "nodemailer";
+import { getSubscriptionCreatedEmail } from "../utils/email.template.js";
 
 export const createSubscription =async (req,res,next)=>{
     try{
