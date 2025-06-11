@@ -9,8 +9,12 @@ export const createSubscription =async (req,res,next)=>{
             ...req.body,
             user: req.user._id
         })
+
+    
+    // Prepare email html content dynamically
+    const html = getSubscriptionCreatedEmail(req.user, subscription);
         
-        // Send email notification
+    // Send email notification
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -23,7 +27,7 @@ export const createSubscription =async (req,res,next)=>{
         from: `"SubDub App" <${EMAIL_USER}>`, 
         to: req.user.email,
         subject: "Subscription Created",
-        text: `Hi ${req.user.name || 'there'},\n\nYour subscription has been successfully created.\n\nThanks!`,
+        html
       };
       console.log(req.user.email)
   
