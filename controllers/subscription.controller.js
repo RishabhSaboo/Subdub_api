@@ -20,15 +20,15 @@ export const createSubscription =async (req,res,next)=>{
       });
   
       const mailOptions = {
-        from: req.user.email,
-        to: EMAIL_USER,
+        from: `"SubDub App" <${EMAIL_USER}>`, 
+        to: req.user.email,
         subject: "Subscription Created",
         text: `Hi ${req.user.name || 'there'},\n\nYour subscription has been successfully created.\n\nThanks!`,
       };
       console.log(req.user.email)
   
       await transporter.sendMail(mailOptions);
-      console.log("Email sent to:", EMAIL_USER);
+      console.log("Email sent to:", req.user.email);
   
 
         res.status(201).json({
