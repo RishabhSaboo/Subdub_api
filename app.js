@@ -9,6 +9,16 @@ import connectToDatabase from './database/mongodb.js';
 import authRouter from './routes/auth.routes.js';
 import userRouter from './routes/user.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
+
+// Since you are using ES modules, get __dirname equivalent:
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 
 dotenv.config();
 console.log("🌍 MONGO_URI is:", process.env.DB_URI);
@@ -25,8 +35,14 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/subscription', subscriptionRouter);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.get('/', (req, res) => {
     res.send("welcome to subscription tracker");
+});
+
+app.get('/openapi.yaml', (req, res) => {
+  res.sendFile(path.join(__dirname, 'openapi.yaml'));
 });
 
 app.use(errorMiddleware);
