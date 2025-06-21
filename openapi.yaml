@@ -1,0 +1,522 @@
+openapi: 3.0.3
+info:
+  title: SubDub API
+  version: 1.0.0
+servers:
+  - url: https://subdub-api.onrender.com
+paths:
+
+  # -------- AUTH ROUTES --------
+  /sign-up:
+    post:
+      summary: User Sign Up
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: strongPassword123
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User created successfully
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1...
+                      user:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: 60f6d4fcdcb2b45a5d4d9e10
+                          name:
+                            type: string
+                            example: John Doe
+                          email:
+                            type: string
+                            example: john@example.com
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already exists
+
+  /sign-in:
+    post:
+      summary: User Sign In
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: strongPassword123
+      responses:
+        '200':
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User signed in successfully
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1...
+                      user:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: 60f6d4fcdcb2b45a5d4d9e10
+                          name:
+                            type: string
+                            example: John Doe
+                          email:
+                            type: string
+                            example: john@example.com
+        '401':
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid password
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+
+  /sign-out:
+    post:
+      summary: User Sign Out
+      responses:
+        '200':
+          description: User signed out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User signed out successfully
+
+  # -------- USER ROUTES --------
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+    post:
+      summary: Create a new user (placeholder)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Jane Doe
+                email: jane@example.com
+                password: strongPassword123
+      responses:
+        '200':
+          description: Create user placeholder response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: create users
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID (requires auth)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+
+    put:
+      summary: Update a user by ID (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Updated Name
+      responses:
+        '200':
+          description: Update user placeholder response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: update this user
+
+    delete:
+      summary: Delete a user by ID (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete user placeholder response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: delete this user
+
+  # -------- SUBSCRIPTION ROUTES --------
+  /subscriptions:
+    get:
+      summary: Get all subscriptions (placeholder)
+      responses:
+        '200':
+          description: List of all subscriptions (dummy response)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: GET all subscriptions
+
+    post:
+      summary: Create a subscription (requires auth)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan:
+                  type: string
+                  example: basic
+                startDate:
+                  type: string
+                  format: date
+                  example: "2025-07-01"
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+        '401':
+          description: Unauthorized - missing or invalid token
+
+  /subscriptions/{id}:
+    get:
+      summary: Get subscription by id (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Subscription ID
+      responses:
+        '200':
+          description: Subscription details placeholder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: get this subscription
+
+    put:
+      summary: Update subscription by id (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Update subscription placeholder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: update this subscription
+
+    delete:
+      summary: Delete subscription by id (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete subscription placeholder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: delete this subscription
+
+  /subscriptions/user/{id}:
+    get:
+      summary: Get subscriptions of a user (requires auth)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: User subscriptions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+        '401':
+          description: Unauthorized or user mismatch
+
+  /subscriptions/{id}/cancel:
+    put:
+      summary: Cancel a subscription (placeholder)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cancel subscription placeholder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: cancel subscription details
+
+  /subscriptions/upcoming-renewals:
+    get:
+      summary: Get upcoming renewals (placeholder)
+      responses:
+        '200':
+          description: Upcoming renewals placeholder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: get upcoming renewals
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 60f6d4fcdcb2b45a5d4d9e10
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+
+    Subscription:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 60f6d4fcdcb2b45a5d4d9e10
+        user:
+          type: string
+          example: 60f6d4fcdcb2b45a5d4d9e09
+        plan:
+          type: string
+          example: basic
+        startDate:
+          type: string
+          format: date
+          example: "2025-07-01"
+        status:
+          type: string
+          example: active
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-06-21T12:34:56Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-06-21T12:34:56Z"
